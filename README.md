@@ -1,4 +1,4 @@
-# IPA Transcribers
+# Transcribers
 
 A framework for writing lists of rules to transform text.
 
