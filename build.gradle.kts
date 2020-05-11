@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion
 plugins {
     kotlin("multiplatform") version "1.3.61"
     id("kotlin-dce-js") version "1.3.61"
+    id ("maven-publish")
     //java
     id ("org.jetbrains.dokka") version "0.10.1"
     id("com.github.johnrengelman.shadow") version "5.2.0"
