@@ -51,7 +51,9 @@ abstract class RuleBasedTranscriber:Transcriber {
 
         Includes the consumed match (if any) in the specificity metric.
      *///todo: when 2 rules are of equal specificity, use the one that appears first
-    fun String.processGreedily(rules:List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String {
+    fun String.processGreedily(rules:List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String =
+        this.processGreedily({rules}, onNoRuleMatch)
+    fun String.processGreedily(rules:()->List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String {
         var out:String = ""
         var processingWord:String = this
         var consumed = ""
@@ -59,7 +61,7 @@ abstract class RuleBasedTranscriber:Transcriber {
             //get the regex result of the unconsumedInput and alreadyConsumed matchers,
             //because we'll be using them a lot.
             //using a triple makes it easier to keep the IRule together with its MatchResults
-            val candidateRules = rules.map {
+            val candidateRules = rules().map {
                 Triple<IRule, MatchResult?, MatchResult?>(it,
                     it.unconsumedMatcher.find(processingWord),
                     it.consumedMatcher?.findAll(consumed)?.lastOrNull())
@@ -97,13 +99,15 @@ abstract class RuleBasedTranscriber:Transcriber {
         return out
     }
 
-    fun String.processWithRules(rules:List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String {
+    fun String.processWithRules(rules:List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String =
+        this.processWithRules({rules}, onNoRuleMatch)
+    fun String.processWithRules(rules:()->List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String {
         var out:String = ""
         var processingWord:String = this
         var consumed = ""
         loop@ while(processingWord.isNotEmpty()) {
             //uses the first rule which matches -- so rule order matters
-            for (rule in rules) {
+            for (rule in rules()) {
                 val unconsumedMatch:MatchResult? = rule.unconsumedMatcher.find(processingWord)
 
                 val consumedMatches:Boolean = rule.consumedMatcher == null ||// if it's null, that counts as matching:
