@@ -11,8 +11,10 @@ import com.github.medavox.ipa_transcribers.unicodeName
  * only simple substitutions matched by Regular expressions may be used.
  **/
 abstract class RuleBasedTranscriber:Transcriber {
-    data class UnmatchedOutput(val newWorkingInput:String, val output:(soFar:String) -> String) {
-        constructor(newWorkingInput: String, output:String):this(newWorkingInput, {it+output})
+    //todo: update consumed as well
+    data class UnmatchedOutput(val newWorkingInput:String, val newConsumed:String, val output:(soFar:String) -> String) {
+        constructor(newWorkingInput: String, newConsumed:String, output:String):this(newWorkingInput, newConsumed, {it+output})
+        constructor(newWorkingInput: String, output:String):this(newWorkingInput, "", {it+output})
     }
     private var reportedChars:String = ""
     fun reportOnceAndCopy(it:String):UnmatchedOutput {
@@ -20,21 +22,21 @@ abstract class RuleBasedTranscriber:Transcriber {
             err.println("copying unknown char '${it[0]}'/'${it[0].toInt().unicodeName}' to output...")
             reportedChars += it[0]
         }
-        return UnmatchedOutput(it.substring(1), it[0].toString())
+        return UnmatchedOutput(it.substring(1), it[0].toString(), it[0].toString())
     }
 
     val reportAndSkip:(String) -> UnmatchedOutput get() = {
         err.println("unknown char '${it[0]}'; skipping...")
-        UnmatchedOutput(it.substring(1), "")
+        UnmatchedOutput(it.substring(1), it[0].toString(),"")
     }
 
     val reportAndCopy:(String) -> UnmatchedOutput get() = {
         err.println("copying unknown char '${it[0]}' to output...")
-        UnmatchedOutput(it.substring(1), it[0].toString())
+        UnmatchedOutput(it.substring(1), it[0].toString(), it[0].toString())
     }
 
     val copy:(String) -> UnmatchedOutput get() = {
-        UnmatchedOutput(it.substring(1), it[0].toString())
+        UnmatchedOutput(it.substring(1), it[0].toString(), it[0].toString())
     }
 
     /**Applies the rule which consumes the most characters.
@@ -79,6 +81,7 @@ abstract class RuleBasedTranscriber:Transcriber {
             if(candidateRules.isEmpty()) {//no rule matched; call the lambda!
                 val unmatchedOutput = onNoRuleMatch(processingWord)
                 processingWord = unmatchedOutput.newWorkingInput
+                consumed += unmatchedOutput.newConsumed
                 out = unmatchedOutput.output(out)
             }else {
                 //find the rule that matches (but does not necessarily consume) the most characters
@@ -132,6 +135,7 @@ abstract class RuleBasedTranscriber:Transcriber {
             //no rule matched; call the lambda!
             val unmatchedOutput = onNoRuleMatch(processingWord)
             processingWord = unmatchedOutput.newWorkingInput
+            consumed += unmatchedOutput.newConsumed
             out = unmatchedOutput.output(out)
         }
         //System.out.println("consumed: $consumed")
