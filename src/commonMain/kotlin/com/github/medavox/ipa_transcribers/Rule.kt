@@ -35,7 +35,8 @@ sealed class IRule(
     val unconsumedMatcher: Regex,
 
     /**A lambda which returns the new output string, __replacing the whole of the old output string.__
-     * Use this constructor if your rule has side effects, such as counting vowels so far.*/
+     * Use this constructor if your rule has side effects, such as counting vowels so far.
+     * @param soFar the entirety of the output string so far, for editing*/
     val outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,
 
     /**The number of letters of native/input text that have been 'consumed' by this rule.
