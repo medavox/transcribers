@@ -7,4 +7,3 @@ expect object err {
 
 /**Get the unicode name of the character with this codepoint.*/
 expect val Int.unicodeName:String
-expect fun String.normaliseNfd():String

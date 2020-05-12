@@ -8,5 +8,3 @@ actual object err {
 }
 
 actual val Int.unicodeName: String get() = Character.getName(this)
-
-actual fun String.normaliseNfd(): String = Normalizer.normalize(this, Normalizer.Form.NFD)
