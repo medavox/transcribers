@@ -41,7 +41,7 @@ open class IRule(
 
     /**The number of letters of native/input text that have been 'consumed' by this rule.
      * if not specified, defaults to the size of the Regex match.*/
-    val lettersConsumed: Int? = null)
+    val lettersConsumed:((theMatches:MatchGroupCollection) ->Int)?=null)
 {
 
 
@@ -51,7 +51,7 @@ open class IRule(
         consumedMatcher:Regex?=null,
         unconsumedMatcher: Regex?=null,
         outputString: ((soFar:String, theMatches:MatchGroupCollection) -> String)?=null,
-        lettersConsumed: Int?=null
+        lettersConsumed: ((theMatches:MatchGroupCollection) ->Int)?=null
     ): IRule =
         EverythingRule(
             consumedMatcher ?: this.consumedMatcher,
@@ -66,7 +66,7 @@ open class IRule(
         consumedMatcher:Regex?=null,
         unconsumedMatcher: Regex?=null,
         outputString: ((soFar:String) -> String)?=null,
-        lettersConsumed: Int?=null
+        lettersConsumed: ((theMatches:MatchGroupCollection) ->Int)?=null
     ): IRule = copy(
         consumedMatcher ?: this.consumedMatcher,
         unconsumedMatcher ?: this.unconsumedMatcher,
@@ -92,7 +92,7 @@ open class IRule(
         var result = consumedMatcher?.hashCode() ?: 0
         result = 31 * result + unconsumedMatcher.hashCode()
         result = 31 * result + outputString.hashCode()
-        result = 31 * result + (lettersConsumed ?: 0)
+        result = 31 * result + lettersConsumed.hashCode()
         return result
     }
 
