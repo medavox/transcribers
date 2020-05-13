@@ -7,7 +7,8 @@ package com.github.medavox.transcribers
  * but rather with the passed [MatchGroupCollection]'s methods.*/
 class CapturingRule(match:Regex, outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,
                     lettersConsumed: Int?=null):
-    IRule(null, match, outputString, if(lettersConsumed != null) {{lettersConsumed}} else null ) {
+    IRule(null, match, outputString,
+        if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null ) {
     constructor(match: String, outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,
                 lettersConsumed: Int?=null
     ):this(Regex(match), outputString, lettersConsumed)

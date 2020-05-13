@@ -88,7 +88,7 @@ abstract class RuleBasedTranscriber:Transcriber {
                 //println("rule '$rule' matches '$processingWord'")
                 out = rule.outputString(out, unconsumedMatch.groups)
                 //number of letters consumed is the match length, unless explicitly specified
-                val actualLettersConsumed = rule.lettersConsumed ?: unconsumedMatch.value.length
+                val actualLettersConsumed = rule.lettersConsumed?.invoke(unconsumedMatch.groups) ?: unconsumedMatch.value.length
                 if (actualLettersConsumed > 0) {
                     consumed += processingWord.substring(0, actualLettersConsumed)
                     processingWord = processingWord.substring(actualLettersConsumed)
@@ -121,7 +121,7 @@ abstract class RuleBasedTranscriber:Transcriber {
                     //println("rule '$rule' matches '$processingWord'")
                     out = rule.outputString(out, unconsumedMatch.groups)
                     //number of letters consumed is the match length, unless explicitly specified
-                    val actualLettersConsumed = rule.lettersConsumed ?: unconsumedMatch.value.length
+                    val actualLettersConsumed = rule.lettersConsumed?.invoke(unconsumedMatch.groups) ?: unconsumedMatch.value.length
                     if(actualLettersConsumed > 0) {
                         consumed += processingWord.substring(0, actualLettersConsumed)
                         processingWord = processingWord.substring(actualLettersConsumed)
