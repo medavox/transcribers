@@ -14,8 +14,8 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion
 //call ./gradlew runDceJsKotlin
 
 plugins {
-    kotlin("multiplatform") version "1.3.61"
-    id("kotlin-dce-js") version "1.3.61"
+    kotlin("multiplatform") version "1.3.72"
+    id("kotlin-dce-js") version "1.3.72"
     id ("maven-publish")
     //java
     id ("org.jetbrains.dokka") version "0.10.1"
@@ -23,7 +23,7 @@ plugins {
 
     //adds a task 'dependencyUpdates' which checks for newer versions of dependencies;
     //apparently this is a feature only built into Android Studio, not IntelliJ IDEA
-    id("com.github.ben-manes.versions") version "0.27.0"
+    id("com.github.ben-manes.versions") version "0.28.0"
 }
 
 group ="com.github.medavox"
@@ -57,7 +57,7 @@ java {
 kotlin.sourceSets["jvmMain"].dependencies {
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
     //implementation("commons-cli:commons-cli:1.4")
-    implementation("info.picocli:picocli:4.1.4")
+    implementation("info.picocli:picocli:4.3.0")
 }
 
 kotlin.sourceSets["jsMain"].dependencies {
@@ -74,8 +74,8 @@ kotlin.sourceSets["jvmTest"].dependencies {
     implementation("junit:junit:4.13")
 
     //for getting the most up-to-date list of names for unicode characters
-    implementation("com.ibm.icu:icu4j:65.1")
-    implementation("org.jsoup:jsoup:1.12.2")
+    implementation("com.ibm.icu:icu4j:67.1")
+    implementation("org.jsoup:jsoup:1.13.1")
 }
 
 //kotlin.sourceSets["androidMain"]
@@ -99,6 +99,5 @@ tasks.withType<ShadowJar> {
     minimize()
     manifest {
         attributes["Implementation-Version"] = version
-        attributes["Main-Class"] = "com.github.medavox.ipa_transcribers.Launcher"
     }
 }
