@@ -53,7 +53,7 @@ open class BaseRule(
         outputString: ((soFar:String, theMatches:MatchGroupCollection) -> String)?=null,
         lettersConsumed: ((theMatches:MatchGroupCollection) ->Int)?=null
     ): BaseRule =
-        EverythingRule(
+        BaseRule(
             consumedMatcher ?: this.consumedMatcher,
             unconsumedMatcher ?: this.unconsumedMatcher,
             outputString ?: this.outputString,
