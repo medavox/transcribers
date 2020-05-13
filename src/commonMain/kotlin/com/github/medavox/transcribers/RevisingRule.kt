@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 /**Modify (revise) the output string so far.
  * Useful when a later character modifies the pronunciation of an earlier one.

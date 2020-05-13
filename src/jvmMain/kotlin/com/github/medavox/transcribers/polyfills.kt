@@ -1,6 +1,4 @@
-package com.github.medavox.ipa_transcribers
-
-import java.text.Normalizer
+package com.github.medavox.transcribers
 
 actual object err {
     actual fun print(err: String) = System.err.print(err)

@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 /**Converts text in a language's native orthography,
  * into a broad IPA transcription where possible.

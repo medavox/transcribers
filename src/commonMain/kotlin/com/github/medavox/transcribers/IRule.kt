@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 /**Specifies one replacement rule, from a Regex matching native text,
  * to the IPA characters corresponding to them.

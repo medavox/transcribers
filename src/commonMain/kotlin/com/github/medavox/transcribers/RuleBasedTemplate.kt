@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 object RuleBasedTemplate : RuleBasedTranscriber() {
     val rules:List<Rule> = listOf(

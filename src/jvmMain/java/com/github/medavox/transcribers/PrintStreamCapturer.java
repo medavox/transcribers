@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers;
+package com.github.medavox.transcribers;
 
 import javafx.scene.control.TextArea;
 

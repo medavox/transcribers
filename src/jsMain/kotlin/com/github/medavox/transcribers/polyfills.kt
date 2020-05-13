@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 import org.w3c.dom.HTMLTextAreaElement
 import kotlin.browser.document

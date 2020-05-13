@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 /**The simplest rule type.
  * Use this when you just need to specify a [Regex] to match the beginning of the remaining input string,

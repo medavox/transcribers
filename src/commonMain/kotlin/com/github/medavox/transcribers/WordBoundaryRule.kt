@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 /**Works like a normal [Rule], but also checks that the last character in the consumed string is not a word character.
  *

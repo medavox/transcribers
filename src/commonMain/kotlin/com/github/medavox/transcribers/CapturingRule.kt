@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 /**Use Regex capturing groups (from the match) in the output string.
  * Useful for matching a whole class of characters with one rule (eg vowels),

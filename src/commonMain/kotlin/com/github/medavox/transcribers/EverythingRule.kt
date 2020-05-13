@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 /**Kitchen-sink Rule. Allows you to specify any and all features of a rule.*/
 class EverythingRule(consumedMatcher:Regex?, unconsumedMatcher: Regex,

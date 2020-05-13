@@ -1,4 +1,4 @@
-package com.github.medavox.ipa_transcribers
+package com.github.medavox.transcribers
 
 /**Match against BOTH the start of the input string,
  * AND the end of the already-consumed string - the input characters that have already been matched so far.
