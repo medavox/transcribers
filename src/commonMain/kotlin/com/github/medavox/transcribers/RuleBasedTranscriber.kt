@@ -50,9 +50,9 @@ abstract class RuleBasedTranscriber:Transcriber {
 
         Includes the consumed match (if any) in the specificity metric.
      *///todo: when 2 rules are of equal specificity, use the one that appears first
-    fun String.processGreedily(rules:List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String =
+    fun String.processGreedily(rules:List<BaseRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String =
         this.processGreedily({rules}, onNoRuleMatch)
-    fun String.processGreedily(rules:()->List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String {
+    fun String.processGreedily(rules:()->List<BaseRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String {
         var out:String = ""
         var processingWord:String = this
         var consumed = ""
@@ -61,7 +61,7 @@ abstract class RuleBasedTranscriber:Transcriber {
             //because we'll be using them a lot.
             //using a triple makes it easier to keep the IRule together with its MatchResults
             val candidateRules = rules().map {
-                Triple<IRule, MatchResult?, MatchResult?>(it,
+                Triple<BaseRule, MatchResult?, MatchResult?>(it,
                     it.unconsumedMatcher.find(processingWord),
                     it.consumedMatcher?.findAll(consumed)?.lastOrNull())
             }.filter {(_, unconsumed, consumedMatch) -> //filter out rules that don't match:
@@ -72,7 +72,7 @@ abstract class RuleBasedTranscriber:Transcriber {
                 //it must match at the end of the "already-consumed input" string
                 consumedMatch.range.endInclusive == consumed.length-1)
             }.map { (rule, uncon, con) -> //make the unconsumed MatchResult non-null
-                Triple<IRule, MatchResult, MatchResult?>(rule, uncon!!, con)
+                Triple<BaseRule, MatchResult, MatchResult?>(rule, uncon!!, con)
             }
 
             if(candidateRules.isEmpty()) {//no rule matched; call the lambda!
@@ -99,9 +99,9 @@ abstract class RuleBasedTranscriber:Transcriber {
         return out
     }
 
-    fun String.processWithRules(rules:List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String =
+    fun String.processWithRules(rules:List<BaseRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String =
         this.processWithRules({rules}, onNoRuleMatch)
-    fun String.processWithRules(rules:()->List<IRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String {
+    fun String.processWithRules(rules:()->List<BaseRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String {
         var out:String = ""
         var processingWord:String = this
         var consumed = ""

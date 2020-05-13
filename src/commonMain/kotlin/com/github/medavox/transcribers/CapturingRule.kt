@@ -5,11 +5,19 @@ package com.github.medavox.transcribers
  * and repeating that character in the output.
  * The capturing groups aren't accessed with the traditional string markers (\1 or $1),
  * but rather with the passed [MatchGroupCollection]'s methods.*/
-class CapturingRule(match:Regex, outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,
-                    lettersConsumed: Int?=null):
-    IRule(null, match, outputString,
-        if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null ) {
-    constructor(match: String, outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,
+class CapturingRule(match:Regex,
+                    outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,
+                    lettersConsumed: Int?=null
+):BaseRule(null,
+    match,
+    outputString,
+    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null
+) {
+    constructor(match: String,
+                outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,
                 lettersConsumed: Int?=null
-    ):this(Regex(match), outputString, lettersConsumed)
+    ):this(Regex(match),
+        outputString,
+        lettersConsumed
+    )
 }

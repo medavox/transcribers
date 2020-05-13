@@ -25,7 +25,7 @@ The regex for the consumed-so-far string is optional.
 primary constructor
  @property consumedMatcher
  */
-open class IRule(
+open class BaseRule(
     /**Matches the already-consumed part of the input string,
      * starting from the most recently consumed character - the end of the used-up input-string.
      * If not null, BOTH matchers must match.*/
@@ -52,7 +52,7 @@ open class IRule(
         unconsumedMatcher: Regex?=null,
         outputString: ((soFar:String, theMatches:MatchGroupCollection) -> String)?=null,
         lettersConsumed: ((theMatches:MatchGroupCollection) ->Int)?=null
-    ): IRule =
+    ): BaseRule =
         EverythingRule(
             consumedMatcher ?: this.consumedMatcher,
             unconsumedMatcher ?: this.unconsumedMatcher,
@@ -67,7 +67,7 @@ open class IRule(
         unconsumedMatcher: Regex?=null,
         outputString: ((soFar:String) -> String)?=null,
         lettersConsumed: ((theMatches:MatchGroupCollection) ->Int)?=null
-    ): IRule = copy(
+    ): BaseRule = copy(
         consumedMatcher ?: this.consumedMatcher,
         unconsumedMatcher ?: this.unconsumedMatcher,
         if(outputString != null) {s, _ -> outputString(s)} else this.outputString,
@@ -78,7 +78,7 @@ open class IRule(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
 
-        other as IRule
+        other as BaseRule
 
         if (consumedMatcher != other.consumedMatcher) return false
         if (unconsumedMatcher != other.unconsumedMatcher) return false
