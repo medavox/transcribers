@@ -6,9 +6,10 @@ package com.github.medavox.transcribers
 class WordBoundaryRule(matcher:Regex,
                        outputString:(soFar:String, theMatches:MatchGroupCollection) -> String,
                        lettersConsumed:Int? = null
-):BaseRule(Regex("(^|[^a-zA-Z_0-9])"),
-    matcher, { s, _->s+outputString },
-    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null
+):BaseRule( Regex("(^|[^a-zA-Z_0-9])"),
+            matcher,
+            outputString,
+            if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null
 ) {
     constructor(match:String,
                 outputString:String,
