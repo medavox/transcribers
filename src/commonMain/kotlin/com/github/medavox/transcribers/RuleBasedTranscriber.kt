@@ -8,12 +8,12 @@ package com.github.medavox.transcribers
  * only simple substitutions matched by Regular expressions may be used.
  **/
 abstract class RuleBasedTranscriber:Transcriber {
-    //todo: update consumed as well
     data class UnmatchedOutput(val newWorkingInput:String, val newConsumed:String, val output:(soFar:String) -> String) {
         constructor(newWorkingInput: String, newConsumed:String, output:String):this(newWorkingInput, newConsumed, {it+output})
         constructor(newWorkingInput: String, output:String):this(newWorkingInput, "", {it+output})
     }
     private var reportedChars:String = ""
+    private val reportedStrings:MutableSet<String> = mutableSetOf()
     fun reportOnceAndCopy(it:String):UnmatchedOutput {
         if(!reportedChars.contains(it[0])) {
             err.println("copying unknown char '${it[0]}'/'${it[0].toInt().unicodeName}' to output...")
@@ -34,6 +34,44 @@ abstract class RuleBasedTranscriber:Transcriber {
 
     val copy:(String) -> UnmatchedOutput get() = {
         UnmatchedOutput(it.substring(1), it[0].toString(), it[0].toString())
+    }
+
+    fun reportOnceAndCopy(remainingInput:String, unmatchedChars:Int): UnmatchedOutput {
+        val unmatched = remainingInput.substring(0, unmatchedChars)
+        if(!reportedStrings.contains(unmatched)) {
+            err.println("copying unknown char '$unmatched' to output...")
+            //err.println("copying unknown char '$unmatched'/'${unmatched.forEach { it.toInt().unicodeName}}' to output...")
+            reportedStrings += unmatched
+        }
+        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars-1),
+                                newConsumed = unmatched,
+                                output = unmatched
+        )
+    }
+
+    fun reportAndSkip(remainingInput:String, unmatchedChars:Int): UnmatchedOutput  {
+        val unmatched = remainingInput.substring(0, unmatchedChars)
+        err.println("unknown char '${remainingInput[0]}'; skipping...")
+        return UnmatchedOutput(newWorkingInput = remainingInput.substring(unmatchedChars-1),
+                newConsumed = unmatched,
+                output = "")
+    }
+
+    fun reportAndCopy(remainingInput:String, unmatchedChars:Int): UnmatchedOutput {
+        val unmatched = remainingInput.substring(0, unmatchedChars)
+        err.println("copying unknown char '${remainingInput[0]}' to output...")
+        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars-1),
+                newConsumed = unmatched,
+                output = unmatched
+        )
+    }
+
+    fun copy(remainingInput:String, unmatchedChars:Int): UnmatchedOutput  {
+        val unmatched = remainingInput.substring(0, unmatchedChars)
+        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars-1),
+                newConsumed = unmatched,
+                output = unmatched
+        )
     }
 
     /**Applies the rule which consumes the most characters.
