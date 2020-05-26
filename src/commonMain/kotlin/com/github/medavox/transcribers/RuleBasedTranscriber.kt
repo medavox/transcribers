@@ -43,7 +43,7 @@ abstract class RuleBasedTranscriber:Transcriber {
             //err.println("copying unknown char '$unmatched'/'${unmatched.forEach { it.toInt().unicodeName}}' to output...")
             reportedStrings += unmatched
         }
-        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars-1),
+        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars),
                                 newConsumed = unmatched,
                                 output = unmatched
         )
@@ -52,7 +52,7 @@ abstract class RuleBasedTranscriber:Transcriber {
     fun reportAndSkip(remainingInput:String, unmatchedChars:Int): UnmatchedOutput  {
         val unmatched = remainingInput.substring(0, unmatchedChars)
         err.println("unknown char '${remainingInput[0]}'; skipping...")
-        return UnmatchedOutput(newWorkingInput = remainingInput.substring(unmatchedChars-1),
+        return UnmatchedOutput(newWorkingInput = remainingInput.substring(unmatchedChars),
                 newConsumed = unmatched,
                 output = "")
     }
@@ -60,7 +60,7 @@ abstract class RuleBasedTranscriber:Transcriber {
     fun reportAndCopy(remainingInput:String, unmatchedChars:Int): UnmatchedOutput {
         val unmatched = remainingInput.substring(0, unmatchedChars)
         err.println("copying unknown char '${remainingInput[0]}' to output...")
-        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars-1),
+        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars),
                 newConsumed = unmatched,
                 output = unmatched
         )
@@ -68,7 +68,7 @@ abstract class RuleBasedTranscriber:Transcriber {
 
     fun copy(remainingInput:String, unmatchedChars:Int): UnmatchedOutput  {
         val unmatched = remainingInput.substring(0, unmatchedChars)
-        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars-1),
+        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars),
                 newConsumed = unmatched,
                 output = unmatched
         )
