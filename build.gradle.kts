@@ -27,7 +27,7 @@ plugins {
 }
 
 group ="com.github.medavox"
-version = "0.7"
+version = "0.8"
 
 repositories {
     mavenCentral()
