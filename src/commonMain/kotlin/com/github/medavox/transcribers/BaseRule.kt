@@ -97,7 +97,8 @@ open class BaseRule(
     }
 
     override fun toString(): String {
-        return "IRule(consumedMatcher=$consumedMatcher, unconsumedMatcher=$unconsumedMatcher, " +
+        return "BaseRule("+(if(consumedMatcher==null) "" else "consumedMatcher=\"$consumedMatcher\", ")+
+                ", unconsumedMatcher=$unconsumedMatcher, " +
                 "outputString=$outputString, lettersConsumed=$lettersConsumed)"
     }
 

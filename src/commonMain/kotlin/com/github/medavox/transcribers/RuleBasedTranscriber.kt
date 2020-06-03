@@ -1,5 +1,5 @@
 package com.github.medavox.transcribers
-
+typealias NoMatchHandler = (remainingInput:String, unmatchedChars:Int) -> RuleBasedTranscriber.UnmatchedOutput
 /***This API takes a context-free approach:
  * Regex is matched to the start of the string only,
  * and the output String is not interpreted as Regex.
@@ -7,14 +7,14 @@ package com.github.medavox.transcribers
  * Therefore, there is no state held by the Transcriber;
  * only simple substitutions matched by Regular expressions may be used.
  **/
+
 abstract class RuleBasedTranscriber:Transcriber {
-    data class UnmatchedOutput(val newWorkingInput:String, val newConsumed:String, val output:(soFar:String) -> String) {
-        constructor(newWorkingInput: String, newConsumed:String, output:String):this(newWorkingInput, newConsumed, {it+output})
-        constructor(newWorkingInput: String, output:String):this(newWorkingInput, "", {it+output})
+    data class UnmatchedOutput(val indexAdvance:Int, val output:(soFar:String) -> String) {
+        constructor(indexAdvance:Int, output:String):this(indexAdvance, {it+output})
     }
     private var reportedChars:String = ""
     private val reportedStrings:MutableSet<String> = mutableSetOf()
-    fun reportOnceAndCopy(it:String):UnmatchedOutput {
+    /*fun reportOnceAndCopy(it:String):UnmatchedOutput {
         if(!reportedChars.contains(it[0])) {
             err.println("copying unknown char '${it[0]}'/'${it[0].toInt().unicodeName}' to output...")
             reportedChars += it[0]
@@ -34,42 +34,40 @@ abstract class RuleBasedTranscriber:Transcriber {
 
     val copy:(String) -> UnmatchedOutput get() = {
         UnmatchedOutput(it.substring(1), it[0].toString(), it[0].toString())
-    }
+    }*/
 
-    fun reportOnceAndCopy(remainingInput:String, unmatchedChars:Int): UnmatchedOutput {
+    val reportOnceAndCopy:NoMatchHandler = fun(remainingInput:String, unmatchedChars:Int): UnmatchedOutput {
         val unmatched = remainingInput.substring(0, unmatchedChars)
         if(!reportedStrings.contains(unmatched)) {
             err.println("copying unknown char '$unmatched' to output...")
             //err.println("copying unknown char '$unmatched'/'${unmatched.forEach { it.toInt().unicodeName}}' to output...")
             reportedStrings += unmatched
         }
-        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars),
-                                newConsumed = unmatched,
+        return UnmatchedOutput( indexAdvance = unmatchedChars,
                                 output = unmatched
         )
     }
 
-    fun reportAndSkip(remainingInput:String, unmatchedChars:Int): UnmatchedOutput  {
+    //todo when we obsolete the old one-arg NoMatch:
+    val reportAndSkip:NoMatchHandler = fun(remainingInput:String, unmatchedChars:Int): UnmatchedOutput  {
+    //fun reportAndSkip(remainingInput:String, unmatchedChars:Int): UnmatchedOutput  {
         val unmatched = remainingInput.substring(0, unmatchedChars)
-        err.println("unknown char '${remainingInput[0]}'; skipping...")
-        return UnmatchedOutput(newWorkingInput = remainingInput.substring(unmatchedChars),
-                newConsumed = unmatched,
+        err.println("unknown chars '$unmatched'; skipping...")
+        return UnmatchedOutput(indexAdvance = unmatchedChars,
                 output = "")
     }
 
-    fun reportAndCopy(remainingInput:String, unmatchedChars:Int): UnmatchedOutput {
+    val reportAndCopy:NoMatchHandler = fun(remainingInput:String, unmatchedChars:Int): UnmatchedOutput {
         val unmatched = remainingInput.substring(0, unmatchedChars)
-        err.println("copying unknown char '${remainingInput[0]}' to output...")
-        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars),
-                newConsumed = unmatched,
+        err.println("copying unknown chars '$unmatched' to output...")
+        return UnmatchedOutput( indexAdvance = unmatchedChars,
                 output = unmatched
         )
     }
 
-    fun copy(remainingInput:String, unmatchedChars:Int): UnmatchedOutput  {
+    val copy:NoMatchHandler = fun(remainingInput:String, unmatchedChars:Int): UnmatchedOutput  {
         val unmatched = remainingInput.substring(0, unmatchedChars)
-        return UnmatchedOutput( newWorkingInput = remainingInput.substring(unmatchedChars),
-                newConsumed = unmatched,
+        return UnmatchedOutput( indexAdvance = unmatchedChars,
                 output = unmatched
         )
     }
@@ -115,8 +113,8 @@ abstract class RuleBasedTranscriber:Transcriber {
 
             if(candidateRules.isEmpty()) {//no rule matched; call the lambda!
                 val unmatchedOutput = onNoRuleMatch(processingWord)
-                processingWord = unmatchedOutput.newWorkingInput
-                consumed += unmatchedOutput.newConsumed
+                processingWord = processingWord.substring(unmatchedOutput.indexAdvance)
+                consumed += processingWord.substring(0, unmatchedOutput.indexAdvance)
                 out = unmatchedOutput.output(out)
             }else {
                 //find the rule that matches (but does not necessarily consume) the most characters
@@ -132,14 +130,15 @@ abstract class RuleBasedTranscriber:Transcriber {
                     processingWord = processingWord.substring(actualLettersConsumed)
                     continue@loop
                 }//else keep going through the rule list, staying at the same position  in the input
+                //todo: why doesn't this function call onNoRuleMatch somewhere?
             }
         }
         return out
     }
 
-    fun String.processWithRules(rules:List<BaseRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String =
+    fun String.processWithRules(rules:List<BaseRule>, onNoRuleMatch:NoMatchHandler) : String =
         this.processWithRules({rules}, onNoRuleMatch)
-    fun String.processWithRules(rules:()->List<BaseRule>, onNoRuleMatch:(unmatched:String) -> UnmatchedOutput) : String {
+    fun String.processWithRules(rules:()->List<BaseRule>, onNoRuleMatch:NoMatchHandler) : String {
         var out:String = ""
         var processingWord:String = this
         var consumed = ""
@@ -168,9 +167,9 @@ abstract class RuleBasedTranscriber:Transcriber {
                 }
             }
             //no rule matched; call the lambda!
-            val unmatchedOutput = onNoRuleMatch(processingWord)
-            processingWord = unmatchedOutput.newWorkingInput
-            consumed += unmatchedOutput.newConsumed
+            val unmatchedOutput = onNoRuleMatch(processingWord, 1)
+            processingWord = processingWord.substring(unmatchedOutput.indexAdvance)
+            consumed += processingWord.substring(0, unmatchedOutput.indexAdvance)
             out = unmatchedOutput.output(out)
         }
         //System.out.println("consumed: $consumed")
