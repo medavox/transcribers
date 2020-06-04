@@ -5,11 +5,13 @@ package com.github.medavox.transcribers
  * */
 class RevisingRule(match:Regex,
                    outputString:(soFar:String) -> String,
-                   lettersConsumed:Int? = null
+                   lettersConsumed:Int? = null,
+                   label:String = ""
 ):BaseRule(null,
     match,
     { s, _ -> outputString(s) },
-    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null
+    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null,
+    label
 ) {
     constructor(match:String,
                 outputString:(soFar:String) -> String,

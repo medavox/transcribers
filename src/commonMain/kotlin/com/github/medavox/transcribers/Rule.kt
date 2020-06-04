@@ -7,11 +7,13 @@ package com.github.medavox.transcribers
  * that you don't want to consume (look-ahead matching).*/
 class Rule(matcher:Regex,
            outputString:String,
-           lettersConsumed:Int? = null
+           lettersConsumed:Int? = null,
+           label:String = ""
 ):BaseRule(null,
     matcher,
     { s, _->s+outputString },
-    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null
+    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null,
+    label
 ) {
     constructor(match:String,
                 outputString:String,

@@ -7,11 +7,13 @@ package com.github.medavox.transcribers
  * but rather with the passed [MatchGroupCollection]'s methods.*/
 class CapturingRule(match:Regex,
                     outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,
-                    lettersConsumed: Int?=null
+                    lettersConsumed: Int?=null,
+                    label:String = ""
 ):BaseRule(null,
     match,
     outputString,
-    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null
+    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null,
+    label
 ) {
     constructor(match: String,
                 outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,

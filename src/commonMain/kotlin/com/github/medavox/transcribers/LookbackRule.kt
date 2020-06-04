@@ -6,11 +6,13 @@ package com.github.medavox.transcribers
 class LookbackRule(consumedMatcher:Regex,
                    unconsumedMatcher:Regex,
                    output:String,
-                   lettersConsumed:Int?=null
+                   lettersConsumed:Int?=null,
+                   label:String=""
 ):BaseRule(consumedMatcher,
     unconsumedMatcher,
     { s, _->s+output},
-    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null
+    if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null,
+    label
 ) {
     constructor(consumedMatcher:String,
                 unconsumedMatcher:String,

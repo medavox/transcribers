@@ -5,11 +5,13 @@ package com.github.medavox.transcribers
  * This is a workaround to simulate "\bword\b" patterns. */
 class WordBoundaryRule(matcher:Regex,
                        outputString:(soFar:String, theMatches:MatchGroupCollection) -> String,
-                       lettersConsumed:Int? = null
+                       lettersConsumed:Int? = null,
+                       label: String = ""
 ):BaseRule( Regex("(^|[^a-zA-Z_0-9])"),
             matcher,
             outputString,
-            if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null
+            if(lettersConsumed != null) fun(m:MatchGroupCollection):Int { return lettersConsumed} else null,
+            label
 ) {
     constructor(match:String,
                 outputString:String,
