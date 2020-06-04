@@ -17,10 +17,12 @@ class Rule(matcher:Regex,
 ) {
     constructor(match:String,
                 outputString:String,
-                lettersConsumed:Int? = null
+                lettersConsumed:Int? = null,
+                label:String = ""
     ):this(Regex(match),
         outputString,
-        lettersConsumed
+        lettersConsumed,
+        label
     )
 }
 

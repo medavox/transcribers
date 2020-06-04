@@ -17,9 +17,11 @@ class CapturingRule(match:Regex,
 ) {
     constructor(match: String,
                 outputString: (soFar:String, theMatches:MatchGroupCollection) -> String,
-                lettersConsumed: Int?=null
+                lettersConsumed: Int?=null,
+                label:String = ""
     ):this(Regex(match),
         outputString,
-        lettersConsumed
+        lettersConsumed,
+        label
     )
 }

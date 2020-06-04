@@ -15,10 +15,12 @@ class WordBoundaryRule(matcher:Regex,
 ) {
     constructor(match:String,
                 outputString:String,
-                lettersConsumed:Int? = null
+                lettersConsumed:Int? = null,
+                label:String = ""
     ):this(Regex(match),
         {s, _ -> s+outputString},
-        lettersConsumed
+        lettersConsumed,
+        label
     )
 }
 

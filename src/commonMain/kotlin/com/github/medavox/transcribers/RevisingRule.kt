@@ -15,9 +15,11 @@ class RevisingRule(match:Regex,
 ) {
     constructor(match:String,
                 outputString:(soFar:String) -> String,
-                lettersConsumed:Int? = null
+                lettersConsumed:Int? = null,
+                label:String = ""
     ):this(Regex(match),
         outputString,
-        lettersConsumed
+        lettersConsumed,
+        label
     )
 }

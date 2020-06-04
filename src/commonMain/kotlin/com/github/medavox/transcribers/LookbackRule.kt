@@ -17,10 +17,12 @@ class LookbackRule(consumedMatcher:Regex,
     constructor(consumedMatcher:String,
                 unconsumedMatcher:String,
                 output:String,
-                lettersConsumed:Int?=null
+                lettersConsumed:Int?=null,
+                label:String = ""
     ):this(Regex(consumedMatcher),
         Regex(unconsumedMatcher),
         output,
-        lettersConsumed
+        lettersConsumed,
+        label
     )
 }
