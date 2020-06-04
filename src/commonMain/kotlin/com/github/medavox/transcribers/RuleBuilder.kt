@@ -22,10 +22,11 @@ class RuleBuilder(private val unconsumedMatcher:Regex) {
     private var consumedMatcher:Regex? = null
     private var outputString:(soFar:String, theMatches:MatchGroupCollection) -> String = {s, _ -> s}
     private var lettersConsumed:((theMatches:MatchGroupCollection) ->Int)?=null
+    private var label:String? = null
 
     constructor(unconsumedMatcher: String) :this(Regex(unconsumedMatcher))
     fun build():BaseRule {
-        return BaseRule(consumedMatcher, unconsumedMatcher, outputString, lettersConsumed)
+        return BaseRule(consumedMatcher, unconsumedMatcher, outputString, lettersConsumed, label ?: "")
     }
 
     fun afterWordBoundary():RuleBuilder {
@@ -55,6 +56,11 @@ class RuleBuilder(private val unconsumedMatcher:Regex) {
     }
     fun lettersConsumed(lettersConsumed:Int):RuleBuilder {
         this.lettersConsumed = {lettersConsumed}
+        return this
+    }
+
+    fun label(label:String):RuleBuilder {
+        this.label = label
         return this
     }
 }

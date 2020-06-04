@@ -41,7 +41,9 @@ open class BaseRule(
 
     /**The number of letters of native/input text that have been 'consumed' by this rule.
      * if not specified, defaults to the size of the Regex match.*/
-    val lettersConsumed:((theMatches:MatchGroupCollection) ->Int)?=null
+    val lettersConsumed:((theMatches:MatchGroupCollection) ->Int)?=null,
+    /**A label for the rule, to help with debugging. Not used directly by the rule processing algorithm -- purely to help humans.*/
+    val label:String = ""
 ) {
 
 
